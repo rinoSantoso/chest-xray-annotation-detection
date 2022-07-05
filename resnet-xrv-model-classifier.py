@@ -113,7 +113,7 @@ class AddColorChannel(torch.nn.Module):
         return img[None, :, :]
 
 
-# In[23]:
+# In[8]:
 
 
 warning_log = {}
@@ -174,7 +174,7 @@ class FinetunedModel(pl.LightningModule):
         
         self.fc = model.model.fc
         
-#         freeze the feature learning
+        freeze the feature learning
         for param in self.conv1.parameters():
               param.requires_grad = False
         
@@ -201,9 +201,9 @@ class FinetunedModel(pl.LightningModule):
         
         # change the number of output classes of the last layer
         # this is useless line as it the number of output classes is already set to be 10
-#         self.classifier = nn.Linear(
-#             in_features=self.classifier.in_features,
-#             out_features=2)
+        self.fc = nn.Linear(
+            in_features=self.classifier.in_features,
+            out_features=2)
         
         # follow https://pytorch.org/hub/pytorch_vision_alexnet/
         tf_tonumpy = ToNumpy()
@@ -319,16 +319,16 @@ class FinetunedModel(pl.LightningModule):
 #         import pdb; pdb.set_trace()
             
     def train_dataloader(self): 
-        return DataLoader(self.dataset_train, batch_size=50, num_workers=2)
+        return DataLoader(self.dataset_train, batch_size=10, num_workers=2)
 
     def val_dataloader(self):
-        return DataLoader(self.dataset_val, batch_size=50, num_workers=2)
+        return DataLoader(self.dataset_val, batch_size=10, num_workers=2)
     
     def test_dataloader(self):
-        return DataLoader(self.dataset_test, batch_size=50, num_workers=2)
+        return DataLoader(self.dataset_test, batch_size=10, num_workers=2)
 
 
-# In[24]:
+# In[9]:
 
 
 pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
@@ -337,11 +337,11 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=1,max_epochs=50,default_root_dir='./custom_logs')
+    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
-    trainer = pl.Trainer(max_epochs=50,default_root_dir='./custom_logs')
+    trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
 
 trainer.fit(model)
 
@@ -389,7 +389,7 @@ plt.tight_layout()
 
 
 # %reload_ext tensorboard
-# %tensorboard --logdir custom_logs/ --port=6009
+# %tensorboard --logdir custom_logs/ --port=6010
 
 
 # In[ ]:
