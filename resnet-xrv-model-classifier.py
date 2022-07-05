@@ -174,7 +174,7 @@ class FinetunedModel(pl.LightningModule):
         
         self.fc = model.model.fc
         
-        freeze the feature learning
+#         freeze the feature learning
         for param in self.conv1.parameters():
               param.requires_grad = False
         
