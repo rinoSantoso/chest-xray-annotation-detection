@@ -319,13 +319,13 @@ class FinetunedModel(pl.LightningModule):
 #         import pdb; pdb.set_trace()
             
     def train_dataloader(self): 
-        return DataLoader(self.dataset_train, batch_size=25, num_workers=2)
+        return DataLoader(self.dataset_train, batch_size=20, num_workers=0)
 
     def val_dataloader(self):
-        return DataLoader(self.dataset_val, batch_size=25, num_workers=2)
+        return DataLoader(self.dataset_val, batch_size=20, num_workers=0)
     
     def test_dataloader(self):
-        return DataLoader(self.dataset_test, batch_size=25, num_workers=2)
+        return DataLoader(self.dataset_test, batch_size=20, num_workers=0)
 
 
 # In[24]:
