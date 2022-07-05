@@ -113,7 +113,7 @@ class AddColorChannel(torch.nn.Module):
         return img[None, :, :]
 
 
-# In[18]:
+# In[21]:
 
 
 warning_log = {}
@@ -158,6 +158,8 @@ class FinetunedModel(pl.LightningModule):
         # load pretrained model
         model = xrv.models.ResNet(weights="resnet50-res512-all")
         
+        self.model = model.model
+        
         self.conv1 = model.model.conv1
         self.bn1 = model.model.bn1
         self.relu = model.model.relu
@@ -196,23 +198,23 @@ class FinetunedModel(pl.LightningModule):
 #             tf_totensor
         ])
     
-#     def features(self, x):
-#         x = fix_resolution(x, 512, self)
-#         warn_normalization(x)
+    def features(self, x):
+        x = fix_resolution(x, 512, self)
+        warn_normalization(x)
         
-#         x = self.model.conv1(x)
-#         x = self.model.bn1(x)
-#         x = self.model.relu(x)
-#         x = self.model.maxpool(x)
+        x = self.model.conv1(x)
+        x = self.model.bn1(x)
+        x = self.model.relu(x)
+        x = self.model.maxpool(x)
 
-#         x = self.model.layer1(x)
-#         x = self.model.layer2(x)
-#         x = self.model.layer3(x)
-#         x = self.model.layer4(x)
+        x = self.model.layer1(x)
+        x = self.model.layer2(x)
+        x = self.model.layer3(x)
+        x = self.model.layer4(x)
 
-#         x = self.model.avgpool(x)
-#         x = torch.flatten(x, 1)
-#         return x
+        x = self.model.avgpool(x)
+        x = torch.flatten(x, 1)
+        return x
     
     def forward(self, x):
         x = fix_resolution(x, 512, self)
@@ -305,7 +307,7 @@ class FinetunedModel(pl.LightningModule):
         return DataLoader(self.dataset_test, batch_size=50, num_workers=2)
 
 
-# In[19]:
+# In[22]:
 
 
 pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
