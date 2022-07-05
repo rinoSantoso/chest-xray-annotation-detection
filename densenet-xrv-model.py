@@ -276,13 +276,13 @@ class FinetunedModel(pl.LightningModule):
 #         import pdb; pdb.set_trace()
             
     def train_dataloader(self): 
-        return DataLoader(self.dataset_train, batch_size=50, num_workers=0)
+        return DataLoader(self.dataset_train, batch_size=50, num_workers=2)
 
     def val_dataloader(self):
-        return DataLoader(self.dataset_val, batch_size=50, num_workers=0)
+        return DataLoader(self.dataset_val, batch_size=50, num_workers=2)
     
     def test_dataloader(self):
-        return DataLoader(self.dataset_test, batch_size=50, num_workers=0)
+        return DataLoader(self.dataset_test, batch_size=50, num_workers=2)
 
 
 # In[25]:
@@ -294,11 +294,11 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=1,max_epochs=50,default_root_dir='./custom_logs')
+    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
-    trainer = pl.Trainer(max_epochs=50,default_root_dir='./custom_logs')
+    trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
 
 trainer.fit(model)
 
