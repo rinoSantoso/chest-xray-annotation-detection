@@ -202,7 +202,7 @@ class FinetunedModel(pl.LightningModule):
         # change the number of output classes of the last layer
         # this is useless line as it the number of output classes is already set to be 10
         self.fc = nn.Linear(
-            in_features=self.classifier.in_features,
+            in_features=self.fc.in_features,
             out_features=2)
         
         # follow https://pytorch.org/hub/pytorch_vision_alexnet/
