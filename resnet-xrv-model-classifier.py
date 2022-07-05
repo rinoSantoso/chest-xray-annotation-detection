@@ -113,7 +113,7 @@ class AddColorChannel(torch.nn.Module):
         return img[None, :, :]
 
 
-# In[21]:
+# In[23]:
 
 
 warning_log = {}
@@ -175,8 +175,29 @@ class FinetunedModel(pl.LightningModule):
         self.fc = model.model.fc
         
 #         freeze the feature learning
-#         for param in self.features.parameters():
-#               param.requires_grad = False
+        for param in self.conv1.parameters():
+              param.requires_grad = False
+        
+        for param in self.bn1.parameters():
+              param.requires_grad = False
+                
+        for param in self.relu.parameters():
+              param.requires_grad = False
+                
+        for param in self.maxpool.parameters():
+              param.requires_grad = False
+                
+        for param in self.layer1.parameters():
+              param.requires_grad = False
+        
+        for param in self.layer2.parameters():
+              param.requires_grad = False
+                
+        for param in self.layer3.parameters():
+              param.requires_grad = False
+                
+        for param in self.layer4.parameters():
+              param.requires_grad = False
         
         # change the number of output classes of the last layer
         # this is useless line as it the number of output classes is already set to be 10
@@ -307,7 +328,7 @@ class FinetunedModel(pl.LightningModule):
         return DataLoader(self.dataset_test, batch_size=50, num_workers=2)
 
 
-# In[22]:
+# In[24]:
 
 
 pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
