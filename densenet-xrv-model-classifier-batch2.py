@@ -294,7 +294,7 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=2,max_epochs=50,default_root_dir='./custom_logs')
+    trainer = pl.Trainer(gpus=1,max_epochs=50,default_root_dir='./custom_logs')
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
