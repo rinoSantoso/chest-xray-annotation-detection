@@ -389,8 +389,8 @@ class FinetunedModel(pl.LightningModule):
 # In[2]:
 
 
-get_ipython().run_line_magic('reload_ext', 'tensorboard')
-get_ipython().run_line_magic('tensorboard', '--logdir custom_logs/ --port=6013')
+# %reload_ext tensorboard
+# %tensorboard --logdir custom_logs/ --port=6013
 
 
 # In[ ]:
