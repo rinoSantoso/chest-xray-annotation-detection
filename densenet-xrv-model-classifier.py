@@ -23,16 +23,6 @@ from PIL import Image
 # In[6]:
 
 
-def tensor_to_imgnumpy(image: torch.Tensor, denormalize=False) -> np.ndarray:
-    assert image.dim() == 3, f"expecting [3,256,256], the input size is {image.size()}" 
-    
-    imgnumpy = image.numpy().transpose(1,2,0)
-    if denormalize:
-        imgnumpy = imgnumpy*np.array((0.485, 0.456, 0.406)) + np.array((0.229, 0.224, 0.22))
-    
-    imgnumpy = imgnumpy.clip(0, 1)
-    return imgnumpy
-
 
 # In[1]:
 
@@ -45,15 +35,6 @@ def tensor_to_imgnumpy_simple(image):
 
 # In[3]:
 
-
-from cifar10_models.inception import inception_v3
-from cifar10_models.googlenet import googlenet
-from cifar10_models.mobilenetv2 import mobilenet_v2
-from cifar10_models.resnet import resnet18
-from cifar10_models.densenet import densenet121
-modelUsed = densenet121(pretrained=True)
-
-print(modelUsed)
 
 
 # In[7]:
@@ -313,40 +294,44 @@ trainer.test()
 
 
 dataset_classes = ['Clean','Dirty']
-
-def imshow(imgnumpy: np.ndarray, label, denormalize=False):
-    plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
-    plt.title(dataset_classes[label])
     
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
-plt.figure(figsize=(20, 8))
+
+targets = []
+preds = []
+
 for idx,(img,label) in enumerate(loader):
-    plt.subplot(4,10,idx+1)
-    imshow(img[0],label,denormalize=True)
+    targets.append(label.item())
     
-    # inference
     try:
         pred = model.forward(img.cuda())
     except Exception as e:
         pred =  model.forward(img)
         print(e)
 
-    title_dataset = dataset_classes[label]
-    title_pred = dataset_classes[pred.argmax()]
-    plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
-    
-    if idx == 40-1:
-        break
-        
-plt.tight_layout()
+    preds.append(pred.argmax().item())
 
 
-# In[ ]:
+ 
 
+from torchmetrics import ConfusionMatrix
+from torchmetrics import AUC
 
-get_ipython().run_line_magic('reload_ext', 'tensorboard')
-get_ipython().run_line_magic('tensorboard', '--logdir custom_logs/ --port=6008')
+targets_torch = torch.tensor(targets)
+preds_torch = torch.tensor(preds)
+
+print(preds)
+print(targets)
+
+confmat = ConfusionMatrix(num_classes=2)
+print("Confusion Matrix: \nClean - Dirty")
+print(confmat(preds_torch, targets_torch))
+
+auc = AUC(reorder=True)
+auc.update(preds_torch, targets_torch)
+print("AUC score: ")
+print(auc.compute())
 
 
 # In[ ]:

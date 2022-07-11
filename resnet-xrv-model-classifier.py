@@ -356,10 +356,6 @@ trainer.test()
 
 
 dataset_classes = ['Clean','Dirty']
-
-def imshow(imgnumpy: np.ndarray, label, denormalize=False):
-    plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
-    plt.title(dataset_classes[label])
     
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
@@ -367,7 +363,7 @@ plt.figure(figsize=(20, 8))
 for idx,(img,label) in enumerate(loader):
     plt.subplot(4,10,idx+1)
     imshow(img[0],label,denormalize=True)
-    
+   
     # inference
     try:
         pred = model.forward(img.cuda())
