@@ -391,7 +391,7 @@ for idx,(img,label) in enumerate(loader):
         pred = model.forward(img.cuda())
     except Exception as e:
         pred =  model.forward(img)
-        print(e)
+#         print(e)
 
     preds.append(pred.argmax().item())
 
@@ -404,8 +404,8 @@ from torchmetrics import AUC
 targets_torch = torch.tensor(targets)
 preds_torch = torch.tensor(preds)
 
-print(preds)
-print(targets)
+# print(preds)
+# print(targets)
 
 confmat = ConfusionMatrix(num_classes=2)
 print("Confusion Matrix: \nClean - Dirty")
