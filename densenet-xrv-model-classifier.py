@@ -349,14 +349,13 @@ for idx,(img,label) in enumerate(loader):
     plt.subplot(4,10,idx+1)
     imshow(img[0],label,denormalize=True)
     
-    print("testing")
     
     # inference
     try:
         pred = model.forward(img.cuda())
     except Exception as e:
         pred =  model.forward(img)
-        print(e)
+#         print(e)
     
    
     
@@ -368,4 +367,4 @@ for idx,(img,label) in enumerate(loader):
         break
         
 plt.tight_layout()
-
+plt.savefig('foo.png')
