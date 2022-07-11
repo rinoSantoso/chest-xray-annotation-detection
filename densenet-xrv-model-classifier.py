@@ -360,7 +360,7 @@ for idx,(img,label) in enumerate(loader):
 
     title_dataset = dataset_classes[label]
     title_pred = dataset_classes[pred.argmax().item()]
-     print("marker")
+    print("marker")
     plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
     
     if idx == 40-1:
