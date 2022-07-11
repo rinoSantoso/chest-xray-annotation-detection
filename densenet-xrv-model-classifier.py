@@ -292,8 +292,8 @@ pl.seed_everything(88)
 path = "./checkpoint_test/densenet-xrv-classifier-version1-100epochs/checkpoints/epoch=99-step=1100.ckpt"
 model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-# # trainer = pl.Trainer()
-# # trainer.test(model)
+trainer = pl.Trainer()
+trainer.test(model)
 
 # dataset_classes = ['Clean','Dirty']
     
