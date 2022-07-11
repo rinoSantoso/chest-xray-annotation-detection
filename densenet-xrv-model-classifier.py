@@ -292,76 +292,78 @@ pl.seed_everything(88)
 path = "./checkpoint_test/densenet-xrv-classifier-version1-100epochs/checkpoints/epoch=99-step=1100.ckpt"
 model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-trainer = pl.Trainer()
-trainer.test(model)
-
-dataset_classes = ['Clean','Dirty']
-    
-loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
-
-
-targets = []
-preds = []
-
-for idx,(img,label) in enumerate(loader):
-    targets.append(label.item())
-    
-    try:
-        pred = model.forward(img.cuda())
-    except Exception as e:
-        pred =  model.forward(img)
-#         print(e)
-
-    preds.append(pred.argmax().item())
-
-
- 
-
-from torchmetrics import ConfusionMatrix
-from torchmetrics import AUC
-
-targets_torch = torch.tensor(targets)
-preds_torch = torch.tensor(preds)
-
-print(preds)
-print(targets)
-
-confmat = ConfusionMatrix(num_classes=2)
-print("Confusion Matrix: \nClean - Dirty")
-print(confmat(preds_torch, targets_torch))
-
-auc = AUC(reorder=True)
-auc.update(preds_torch, targets_torch)
-print("AUC score: ")
-print(auc.compute())
-
+# # trainer = pl.Trainer()
+# # trainer.test(model)
 
 # dataset_classes = ['Clean','Dirty']
-
-# def imshow(imgnumpy: np.ndarray, label, denormalize=False):
-#     plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
-#     plt.title(dataset_classes[label])
     
 # loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
-# plt.figure(figsize=(20, 8))
+
+# targets = []
+# preds = []
+
 # for idx,(img,label) in enumerate(loader):
-#     plt.subplot(4,10,idx+1)
-#     imshow(img[0],label,denormalize=True)
+#     targets.append(label.item())
     
-#     # inference
 #     try:
 #         pred = model.forward(img.cuda())
 #     except Exception as e:
 #         pred =  model.forward(img)
-#         print(e)
+# #         print(e)
 
-#     title_dataset = dataset_classes[label]
-#     title_pred = dataset_classes[pred.argmax().item()]
-#     plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
+#     preds.append(pred.argmax().item())
+
+
+ 
+
+# from torchmetrics import ConfusionMatrix
+# from torchmetrics import AUC
+
+# targets_torch = torch.tensor(targets)
+# preds_torch = torch.tensor(preds)
+
+# print(preds)
+# print(targets)
+
+# confmat = ConfusionMatrix(num_classes=2)
+# print("Confusion Matrix: \nClean - Dirty")
+# print(confmat(preds_torch, targets_torch))
+
+# auc = AUC(reorder=True)
+# auc.update(preds_torch, targets_torch)
+# print("AUC score: ")
+# print(auc.compute())
+
+
+dataset_classes = ['Clean','Dirty']
+
+def imshow(imgnumpy: np.ndarray, label, denormalize=False):
+    plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
+    plt.title(dataset_classes[label])
     
-#     if idx == 40-1:
-#         break
+loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
+
+plt.figure(figsize=(20, 8))
+for idx,(img,label) in enumerate(loader):
+    plt.subplot(4,10,idx+1)
+    imshow(img[0],label,denormalize=True)
+    
+    # inference
+    try:
+        pred = model.forward(img.cuda())
+    except Exception as e:
+        pred =  model.forward(img)
+        print(e)
+    
+    print(marker)
+    
+    title_dataset = dataset_classes[label]
+    title_pred = dataset_classes[pred.argmax().item()]
+    plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
+    
+    if idx == 40-1:
+        break
         
-# plt.tight_layout()
+plt.tight_layout()
 
