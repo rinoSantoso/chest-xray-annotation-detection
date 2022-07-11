@@ -356,10 +356,11 @@ for idx,(img,label) in enumerate(loader):
         pred =  model.forward(img)
         print(e)
     
-    print(marker)
-    
+   
+
     title_dataset = dataset_classes[label]
     title_pred = dataset_classes[pred.argmax().item()]
+     print("marker")
     plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
     
     if idx == 40-1:
