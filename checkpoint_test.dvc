@@ -1,5 +1,5 @@
 outs:
-- md5: 0c47a6783362cb8b4eb3b964cd48b0f7.dir
-  size: 28431705
-  nfiles: 4
+- md5: ac6af8328de397e6e3673bd5f5bbc323.dir
+  size: 369829586
+  nfiles: 24
   path: checkpoint_test

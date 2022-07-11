@@ -269,29 +269,31 @@ class FinetunedModel(pl.LightningModule):
 # In[25]:
 
 
-pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
+# pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
 
-model = FinetunedModel()
+# model = FinetunedModel()
 
-# most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
-try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
-except Exception as e:
-    # most likely due to GPU, so fallback to non GPU
-    print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
+# # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
+# try:
+#     trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
+# except Exception as e:
+#     # most likely due to GPU, so fallback to non GPU
+#     print(e)
+#     trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
 
-trainer.fit(model)
+# trainer.fit(model)
 
-
-# In[26]:
-
-
-trainer.test()
+# trainer.test()
 
 
-# In[ ]:
 
+
+pl.seed_everything(88)
+path = "./checkpoint_test/densenet-xrv-classifier-version1-100epochs/checkpoints/epoch=99-step=1100.ckpt"
+model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+
+trainer = pl.Trainer()
+trainer.test(model)
 
 dataset_classes = ['Clean','Dirty']
     
@@ -332,9 +334,6 @@ auc = AUC(reorder=True)
 auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
-
-
-# In[ ]:
 
 
 

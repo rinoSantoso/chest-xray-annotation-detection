@@ -241,7 +241,21 @@ class FinetunedModel(pl.LightningModule):
         x = fix_resolution(x, 512, self)
         warn_normalization(x)
         
-        out = self.model(x)
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.relu(x)
+        x = self.maxpool(x)
+
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+
+        x = self.avgpool(x)
+        x = x.reshape(x.size(0), -1)
+        x = self.fc(x)
+        
+        out = x
         
         if hasattr(self, 'apply_sigmoid') and self.apply_sigmoid:
             out = torch.sigmoid(out)
@@ -331,64 +345,76 @@ class FinetunedModel(pl.LightningModule):
 # In[9]:
 
 
-pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
+# pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
 
-model = FinetunedModel()
+# model = FinetunedModel()
 
-# most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
-try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
-except Exception as e:
-    # most likely due to GPU, so fallback to non GPU
-    print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
+# # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
+# try:
+#     trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
+# except Exception as e:
+#     # most likely due to GPU, so fallback to non GPU
+#     print(e)
+#     trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
 
-trainer.fit(model)
-
-
-# In[26]:
+# trainer.fit(model)
 
 
-trainer.test()
+# # In[26]:
+
+
+# trainer.test()
 
 
 # In[ ]:
 
 
+pl.seed_everything(88)
+path = "./checkpoint_test/Resnet-xrv-classifier-version0-100epochs/checkpoints/epoch=99-step=5300.ckpt"
+model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+
+trainer = pl.Trainer()
+trainer.test(model)
+
 dataset_classes = ['Clean','Dirty']
     
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
-plt.figure(figsize=(20, 8))
+
+targets = []
+preds = []
+
 for idx,(img,label) in enumerate(loader):
-    plt.subplot(4,10,idx+1)
-    imshow(img[0],label,denormalize=True)
-   
-    # inference
+    targets.append(label.item())
+    
     try:
         pred = model.forward(img.cuda())
     except Exception as e:
         pred =  model.forward(img)
         print(e)
 
-    title_dataset = dataset_classes[label]
-    title_pred = dataset_classes[pred.argmax()]
-    plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
-    
-    if idx == 40-1:
-        break
-        
-plt.tight_layout()
+    preds.append(pred.argmax().item())
 
 
-# In[3]:
+ 
 
+from torchmetrics import ConfusionMatrix
+from torchmetrics import AUC
 
-# %reload_ext tensorboard
-# %tensorboard --logdir custom_logs/ --port=6010
+targets_torch = torch.tensor(targets)
+preds_torch = torch.tensor(preds)
 
+print(preds)
+print(targets)
 
-# In[ ]:
+confmat = ConfusionMatrix(num_classes=2)
+print("Confusion Matrix: \nClean - Dirty")
+print(confmat(preds_torch, targets_torch))
+
+auc = AUC(reorder=True)
+auc.update(preds_torch, targets_torch)
+print("AUC score: ")
+print(auc.compute())
 
 
 
