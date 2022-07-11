@@ -349,6 +349,8 @@ for idx,(img,label) in enumerate(loader):
     plt.subplot(4,10,idx+1)
     imshow(img[0],label,denormalize=True)
     
+    print("testing")
+    
     # inference
     try:
         pred = model.forward(img.cuda())
@@ -357,7 +359,6 @@ for idx,(img,label) in enumerate(loader):
         print(e)
     
    
-    print(pred)
     
     title_dataset = dataset_classes[label]
     title_pred = dataset_classes[pred.argmax().item()]
