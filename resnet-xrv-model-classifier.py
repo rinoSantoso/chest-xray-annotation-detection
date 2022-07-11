@@ -252,7 +252,7 @@ class FinetunedModel(pl.LightningModule):
         x = self.layer4(x)
 
         x = self.avgpool(x)
-        x = x.reshape(x.size(0), -1)
+        x = torch.flatten(x, 1)
         x = self.fc(x)
         
         out = x
