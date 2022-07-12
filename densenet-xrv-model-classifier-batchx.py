@@ -373,6 +373,35 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
+def imshow(imgnumpy: np.ndarray, label, denormalize=False):
+    plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
+    plt.title(dataset_classes[label])
+    
+loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
+plt.figure(figsize=(20, 8))
+for idx,(img,label) in enumerate(loader):
+    plt.subplot(4,10,idx+1)
+    imshow(img[0],label,denormalize=True)
+    
+    
+    # inference
+    try:
+        pred = model.forward(img.cuda())
+    except Exception as e:
+        pred =  model.forward(img)
+#         print(e)
+    
+   
+    
+    title_dataset = dataset_classes[label]
+    title_pred = dataset_classes[pred.argmax().item()]
+    plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
+    
+    if idx == 40-1:
+        break
+        
+plt.tight_layout()
+plt.savefig('bar.png')
 
 
