@@ -15,7 +15,7 @@ from torchmetrics.functional import accuracy
 # from pytorch_lightning.metrics.functional import accuracy
 from torch.utils.data import DataLoader, random_split 
 import torchxrayvision as xrv
-
+from torchmetrics import ConfusionMatrix
 import requests
 from PIL import Image
 
@@ -244,6 +244,10 @@ class FinetunedModel(pl.LightningModule):
         loss = F.cross_entropy(outputs,labels)
         
         preds = torch.argmax(outputs, dim=1)
+        
+        confmat = ConfusionMatrix(num_classes=2)
+        print("Confusion Matrix: \nClean - Dirty")
+        print(confmat(preds, labels))
         acc = accuracy(preds, labels)
         
         # Calling self.log will surface up scalars for you in TensorBoard
@@ -288,31 +292,31 @@ class FinetunedModel(pl.LightningModule):
 # In[25]:
 
 
-pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
+# pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
 
-model = FinetunedModel()
+# model = FinetunedModel()
 
-# most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
-try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
-except Exception as e:
-    # most likely due to GPU, so fallback to non GPU
-    print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
+# # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
+# try:
+#     trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
+# except Exception as e:
+#     # most likely due to GPU, so fallback to non GPU
+#     print(e)
+#     trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
 
-trainer.fit(model)
+# trainer.fit(model)
 
-trainer.test()
-
-
+# trainer.test()
 
 
-# pl.seed_everything(88)
-# path = "./custom_logs/lightning_logs/version_10/checkpoints/epoch=99-step=1000.ckpt"
-# model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-# trainer = pl.Trainer()
-# trainer.test(model)
+
+pl.seed_everything(88)
+path = "./custom_logs/lightning_logs/version_11/checkpoints/epoch=99-step=2300.ckpt"
+model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+
+trainer = pl.Trainer()
+trainer.test(model)
 
 dataset_classes = ['Bus','Car']
     
@@ -336,7 +340,6 @@ for idx,(img,label) in enumerate(loader):
 
  
 
-from torchmetrics import ConfusionMatrix
 from torchmetrics import AUC
 
 targets_torch = torch.tensor(targets)
