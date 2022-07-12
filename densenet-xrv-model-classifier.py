@@ -322,14 +322,14 @@ false_negative = 0
 for i in range(len(targets)):
     if preds[i] == 0:
         if targets[i] == 0:
-            true_positive++
+            true_positive+=1
         else:
-            false_positive++
+            false_positive+=1
     else:
         if targets[i] == 0:
-            false_negative++
+            false_negative+=1
         else:
-            true_negative++
+            true_negative+=1
 
 print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
  
