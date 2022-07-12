@@ -46,16 +46,6 @@ def tensor_to_imgnumpy_simple(image):
 # In[3]:
 
 
-from cifar10_models.inception import inception_v3
-from cifar10_models.googlenet import googlenet
-from cifar10_models.mobilenetv2 import mobilenet_v2
-from cifar10_models.resnet import resnet18
-from cifar10_models.densenet import densenet121
-modelUsed = densenet121(pretrained=True)
-
-print(modelUsed)
-
-
 # In[7]:
 
 class CustomNormalize(torch.nn.Module):
