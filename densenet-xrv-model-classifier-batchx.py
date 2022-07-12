@@ -288,31 +288,31 @@ class FinetunedModel(pl.LightningModule):
 # In[25]:
 
 
-pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
+# pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
 
-model = FinetunedModel()
+# model = FinetunedModel()
 
-# most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
-try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
-except Exception as e:
-    # most likely due to GPU, so fallback to non GPU
-    print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
+# # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
+# try:
+#     trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
+# except Exception as e:
+#     # most likely due to GPU, so fallback to non GPU
+#     print(e)
+#     trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
 
-trainer.fit(model)
+# trainer.fit(model)
 
-trainer.test()
-
-
+# trainer.test()
 
 
-# pl.seed_everything(88)
-# path = "./checkpoint_test/densenet-xrv-classifier-version3-50epochs-batch3/checkpoints/epoch=49-step=1350.ckpt"
-# model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-# trainer = pl.Trainer()
-# trainer.test(model)
+
+pl.seed_everything(88)
+path = "./custom_logs/lightning_logs/version_10/checkpoints/epoch=99-step=1000.ckpt"
+model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+
+trainer = pl.Trainer()
+trainer.test(model)
 
 dataset_classes = ['Clean','Dirty']
     
