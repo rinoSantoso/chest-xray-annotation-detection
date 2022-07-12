@@ -345,9 +345,28 @@ preds_torch = torch.tensor(preds)
 # print(preds)
 # print(targets)
 
-confmat = ConfusionMatrix(num_classes=2)
-print("Confusion Matrix: \nClean - Dirty")
-print(confmat(preds_torch, targets_torch))
+# confmat = ConfusionMatrix(num_classes=2)
+# print("Confusion Matrix: \nClean - Dirty")
+# print(confmat(preds_torch, targets_torch))
+
+true_positive = 0
+false_positive = 0
+true_negative = 0
+false_negative = 0
+    
+for i in range(len(targets)):
+    if preds[i] == 0:
+        if targets[i] == 0:
+            true_positive+=1
+        else:
+            false_positive+=1
+    else:
+        if targets[i] == 0:
+            false_negative+=1
+        else:
+            true_negative+=1
+
+print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
 
 auc = AUC(reorder=True)
 auc.update(preds_torch, targets_torch)
