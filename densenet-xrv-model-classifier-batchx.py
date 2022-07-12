@@ -263,7 +263,7 @@ class FinetunedModel(pl.LightningModule):
     def setup(self, stage=None):
         # split, transform, secretly move to GPU (if needed) by PL (not by us)
         if stage == 'fit' or stage is None:
-            dataset_full = datasets.ImageFolder(root='./data/Batch X/Train/', transform=self.tf_compose)
+            dataset_full = datasets.ImageFolder(root='./cars_buses/Train/', transform=self.tf_compose)
             
             # split
             SIZE_TRAIN_DATA = int(len(dataset_full)*0.75)
@@ -271,7 +271,7 @@ class FinetunedModel(pl.LightningModule):
             self.dataset_train, self.dataset_val = random_split(dataset_full, [SIZE_TRAIN_DATA,SIZE_VAL_DATA])
             
         if stage == 'test' or stage is None:
-            self.dataset_test = datasets.ImageFolder(root='./data//Batch X/Test/', transform=self.tf_compose)
+            self.dataset_test = datasets.ImageFolder(root='./cars_buses/Test/', transform=self.tf_compose)
             
 #         import pdb; pdb.set_trace()
             

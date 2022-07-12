@@ -1,0 +1,5 @@
+outs:
+- md5: f8f545bffa9b3c2ae5c5c81e6fb9de4d.dir
+  size: 42681470
+  nfiles: 1868
+  path: cars_buses
