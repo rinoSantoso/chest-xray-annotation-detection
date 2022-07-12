@@ -236,7 +236,7 @@ class FinetunedModel(pl.LightningModule):
         print(type(inputs))
 #         print(inputs)
         
-        test_inputs.extend(inputs.tolist())
+        test_inputs.extend(inputs)
         test_targets.extend(labels.tolist())
         
         outputs = self.forward(inputs)
