@@ -233,10 +233,17 @@ class FinetunedModel(pl.LightningModule):
         # but I replace val_loss --> test_loss etc
         inputs, labels = batch
         
-        print(inputs.size())
+#         print(inputs.size())
 #         print(inputs)
         
-        test_inputs.extend(inputs)
+        split_inputs = torch.split(inputs, 1)
+        
+        for i in split_inputs:
+            print(i.size())
+            test_inputs.append(i)
+        
+    
+#         test_inputs.extend(inputs)
         test_targets.extend(labels.tolist())
         
         outputs = self.forward(inputs)
@@ -337,6 +344,8 @@ preds = []
 # #         print(e)
 
 #     preds.append(pred.argmax().item())
+
+
 
 
 for img in test_inputs:
