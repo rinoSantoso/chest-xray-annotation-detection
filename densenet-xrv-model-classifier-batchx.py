@@ -233,7 +233,7 @@ class FinetunedModel(pl.LightningModule):
         # but I replace val_loss --> test_loss etc
         inputs, labels = batch
         
-        print(type(inputs))
+        print(inputs.size())
 #         print(inputs)
         
         test_inputs.extend(inputs)
@@ -325,18 +325,18 @@ loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 targets = []
 preds = []
 
-for idx,(img,label) in enumerate(loader):
-    targets.append(label.item())
+# for idx,(img,label) in enumerate(loader):
+#     targets.append(label.item())
     
-    print(img.size())
+# #     print(img.size())
     
-    try:
-        pred = model.forward(img.cuda())
-    except Exception as e:
-        pred =  model.forward(img)
-#         print(e)
+#     try:
+#         pred = model.forward(img.cuda())
+#     except Exception as e:
+#         pred =  model.forward(img)
+# #         print(e)
 
-    preds.append(pred.argmax().item())
+#     preds.append(pred.argmax().item())
 
 
 for img in test_inputs:
