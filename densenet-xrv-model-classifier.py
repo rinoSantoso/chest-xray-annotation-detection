@@ -295,26 +295,43 @@ model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 trainer = pl.Trainer()
 trainer.test(model)
 
-# dataset_classes = ['Clean','Dirty']
+dataset_classes = ['Clean','Dirty']
     
-# loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
+loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
 
-# targets = []
-# preds = []
+targets = []
+preds = []
 
-# for idx,(img,label) in enumerate(loader):
-#     targets.append(label.item())
+for idx,(img,label) in enumerate(loader):
+    targets.append(label.item())
     
-#     try:
-#         pred = model.forward(img.cuda())
-#     except Exception as e:
-#         pred =  model.forward(img)
-# #         print(e)
+    try:
+        pred = model.forward(img.cuda())
+    except Exception as e:
+        pred =  model.forward(img)
+#         print(e)
 
-#     preds.append(pred.argmax().item())
+    preds.append(pred.argmax().item())
 
+true_positive = 0
+false_positive = 0
+true_negative = 0
+false_negative = 0
+    
+for i in range(len(targets)):
+    if preds[i] == 0:
+        if targets[i] == 0:
+            true_positive++
+        else:
+            false_positive++
+    else:
+        if targets[i] == 0:
+            false_negative++
+        else:
+            true_negative++
 
+print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
  
 
 # from torchmetrics import ConfusionMatrix
@@ -336,35 +353,35 @@ trainer.test(model)
 # print(auc.compute())
 
 
-dataset_classes = ['Clean','Dirty']
+# dataset_classes = ['Clean','Dirty']
 
-def imshow(imgnumpy: np.ndarray, label, denormalize=False):
-    plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
-    plt.title(dataset_classes[label])
+# def imshow(imgnumpy: np.ndarray, label, denormalize=False):
+#     plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
+#     plt.title(dataset_classes[label])
     
-loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
+# loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
-plt.figure(figsize=(20, 8))
-for idx,(img,label) in enumerate(loader):
-    plt.subplot(4,10,idx+1)
-    imshow(img[0],label,denormalize=True)
+# plt.figure(figsize=(20, 8))
+# for idx,(img,label) in enumerate(loader):
+#     plt.subplot(4,10,idx+1)
+#     imshow(img[0],label,denormalize=True)
     
     
-    # inference
-    try:
-        pred = model.forward(img.cuda())
-    except Exception as e:
-        pred =  model.forward(img)
-#         print(e)
+#     # inference
+#     try:
+#         pred = model.forward(img.cuda())
+#     except Exception as e:
+#         pred =  model.forward(img)
+# #         print(e)
     
    
     
-    title_dataset = dataset_classes[label]
-    title_pred = dataset_classes[pred.argmax().item()]
-    plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
+#     title_dataset = dataset_classes[label]
+#     title_pred = dataset_classes[pred.argmax().item()]
+#     plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
     
-    if idx == 40-1:
-        break
+#     if idx == 40-1:
+#         break
         
-plt.tight_layout()
-plt.savefig('foo.png')
+# plt.tight_layout()
+# plt.savefig('foo.png')
