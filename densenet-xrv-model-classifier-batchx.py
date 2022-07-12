@@ -244,7 +244,7 @@ class FinetunedModel(pl.LightningModule):
         inputs, labels = batch
         
         print(type(inputs))
-        print(inputs)
+#         print(inputs)
         
         test_inputs.extend(inputs.tolist())
         test_targets.extend(labels.tolist())
