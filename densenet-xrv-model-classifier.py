@@ -384,4 +384,4 @@ for idx,(img,label) in enumerate(loader):
         break
         
 plt.tight_layout()
-plt.savefig('foo.png')
+plt.savefig('bar.png')
