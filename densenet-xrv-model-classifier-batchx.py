@@ -58,7 +58,6 @@ print(modelUsed)
 
 # In[7]:
 
-
 class CustomNormalize(torch.nn.Module):
     """Normalize a tensor image with mean and standard deviation.
     This transform does not support PIL Image.
@@ -149,7 +148,11 @@ def warn_normalization(x):
             warning_log["norm_correct"] = True
               
         warning_log["norm_check"] = True
-    
+
+        
+test_inputs = []
+test_targets = []
+        
 class FinetunedModel(pl.LightningModule):
     def __init__(self):
         super().__init__()
@@ -240,6 +243,9 @@ class FinetunedModel(pl.LightningModule):
         # but I replace val_loss --> test_loss etc
         inputs, labels = batch
         
+        test_inputs.append(inputs)
+        test_targets.append(labels.item())
+        
         outputs = self.forward(inputs)
         loss = F.cross_entropy(outputs,labels)
         
@@ -323,27 +329,36 @@ dataset_classes = ['Bus','Car']
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
 
-targets = []
-preds = []
+# targets = []
+# preds = []
 
-for idx,(img,label) in enumerate(loader):
-    targets.append(label.item())
+# for idx,(img,label) in enumerate(loader):
+#     targets.append(label.item())
     
+#     try:
+#         pred = model.forward(img.cuda())
+#     except Exception as e:
+#         pred =  model.forward(img)
+# #         print(e)
+
+#     preds.append(pred.argmax().item())
+
+
+for img in test_inputs:
     try:
         pred = model.forward(img.cuda())
     except Exception as e:
         pred =  model.forward(img)
-#         print(e)
 
     preds.append(pred.argmax().item())
-
-
- 
-
+    
 from torchmetrics import AUC
 
-targets_torch = torch.tensor(targets)
+# targets_torch = torch.tensor(targets)
+targets_torch = torch.tensor(test_targets)
+targets = test_targets
 preds_torch = torch.tensor(preds)
+
 
 # print(preds)
 # print(targets)
