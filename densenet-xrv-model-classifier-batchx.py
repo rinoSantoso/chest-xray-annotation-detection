@@ -322,19 +322,21 @@ dataset_classes = ['Bus','Car']
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
 
-# targets = []
-# preds = []
+targets = []
+preds = []
 
-# for idx,(img,label) in enumerate(loader):
-#     targets.append(label.item())
+for idx,(img,label) in enumerate(loader):
+    targets.append(label.item())
     
-#     try:
-#         pred = model.forward(img.cuda())
-#     except Exception as e:
-#         pred =  model.forward(img)
-# #         print(e)
+    print(img.size())
+    
+    try:
+        pred = model.forward(img.cuda())
+    except Exception as e:
+        pred =  model.forward(img)
+#         print(e)
 
-#     preds.append(pred.argmax().item())
+    preds.append(pred.argmax().item())
 
 
 for img in test_inputs:
