@@ -246,7 +246,7 @@ class FinetunedModel(pl.LightningModule):
         preds = torch.argmax(outputs, dim=1)
         
         confmat = ConfusionMatrix(num_classes=2)
-        print("Confusion Matrix: \nClean - Dirty")
+#         print("Confusion Matrix: \nClean - Dirty")
         print(confmat(preds, labels))
         acc = accuracy(preds, labels)
         
