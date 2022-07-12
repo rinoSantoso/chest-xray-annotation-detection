@@ -243,8 +243,11 @@ class FinetunedModel(pl.LightningModule):
         # but I replace val_loss --> test_loss etc
         inputs, labels = batch
         
-        test_inputs.append(inputs)
-        test_targets.append(labels.item())
+        print(type(inputs))
+        print(inputs)
+        
+        test_inputs.extend(inputs.tolist())
+        test_targets.extend(labels.tolist())
         
         outputs = self.forward(inputs)
         loss = F.cross_entropy(outputs,labels)
