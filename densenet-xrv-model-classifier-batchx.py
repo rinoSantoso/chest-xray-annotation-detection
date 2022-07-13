@@ -423,6 +423,12 @@ for param in model.classifier.parameters():
     model_classifier_parameters.append(param.data)
 #     print(param.data)
 
+for i in range(model_classifier_parameters):
+    if model_classifier_parameters[i] == self_classifier_parameters[i]:
+        print("Weight is equal")
+    else:
+        print("Weight is NOT equal")
+
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
     plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
     plt.title(dataset_classes[label])
