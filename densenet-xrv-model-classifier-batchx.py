@@ -252,6 +252,7 @@ class FinetunedModel(pl.LightningModule):
         loss = F.cross_entropy(outputs,labels)
         
         preds = torch.argmax(outputs, dim=1)
+        print(preds.size())
         
         confmat = ConfusionMatrix(num_classes=2)
 #         print("Confusion Matrix: \nClean - Dirty")
