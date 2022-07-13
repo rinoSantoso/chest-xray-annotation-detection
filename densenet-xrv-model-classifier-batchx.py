@@ -263,6 +263,8 @@ class FinetunedModel(pl.LightningModule):
         test_false_negative = 0
         test_preds = []
         
+        print(len(test_inputs))
+        
         for img in test_inputs:
             try:
                 test_pred = self.forward(img.cuda())
