@@ -275,7 +275,7 @@ class FinetunedModel(pl.LightningModule):
             for i in range(len(test_targets)):
                 if test_preds[i] == 0:
                     if test_targets[i] == 0:
-                        true_positive+=1
+                        test_true_positive+=1
                     else:
                         test_false_positive+=1
                 else:
@@ -284,7 +284,7 @@ class FinetunedModel(pl.LightningModule):
                     else:
                         test_true_negative+=1
         
-        print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
+        print("true positive: " + str(test_true_positive) + "\n" + "false positive: " + str(test_false_positive) + "\n" + "true negative: " + str(test_true_negative) + "\n"  + "false negative: " + str(test_false_negative))
         
         
 #         confmat = ConfusionMatrix(num_classes=2)
