@@ -279,7 +279,7 @@ class FinetunedModel(pl.LightningModule):
                     else:
                         test_false_positive+=1
                 else:
-                    if targets[i] == 0:
+                    if test_targets[i] == 0:
                         test_false_negative+=1
                     else:
                         test_true_negative+=1
