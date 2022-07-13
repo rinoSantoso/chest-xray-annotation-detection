@@ -272,7 +272,7 @@ class FinetunedModel(pl.LightningModule):
 #             print(pred)
             test_preds.append(test_pred.argmax().item())
     
-            for i in range(len(targets)):
+            for i in range(len(test_targets)):
                 if test_preds[i] == 0:
                     if test_targets[i] == 0:
                         true_positive+=1
