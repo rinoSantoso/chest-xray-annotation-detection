@@ -424,10 +424,8 @@ for param in model.classifier.parameters():
 #     print(param.data)
 
 for i in range(len(model_classifier_parameters)):
-    if model_classifier_parameters[i] == self_classifier_parameters[i]:
-        print("Weight is equal")
-    else:
-        print("Weight is NOT equal")
+    print(torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]))
+
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
     plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
