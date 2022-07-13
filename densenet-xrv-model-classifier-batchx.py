@@ -255,9 +255,26 @@ class FinetunedModel(pl.LightningModule):
         
         preds = torch.argmax(outputs, dim=1)
         preds_split = torch.split(preds, 1)
-        print(preds_split[0].size())
+#         print(preds_split[0].size())
         
-        confmat = ConfusionMatrix(num_classes=2)
+        test_true_positive = 0
+        test_false_positive = 0
+        test_true_negative = 0
+        test_false_negative = 0
+        
+        for img in test_inputs:
+            try:
+                pred = self.forward(img.cuda())
+            except Exception as e:
+                pred =  self.forward(img)
+
+#             print(pred)
+            preds.append(pred.argmax().item())
+        
+        print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
+        
+        
+#         confmat = ConfusionMatrix(num_classes=2)
 #         print("Confusion Matrix: \nClean - Dirty")
 #         print(confmat(preds, labels))
         acc = accuracy(preds, labels)
