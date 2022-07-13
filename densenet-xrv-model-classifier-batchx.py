@@ -396,7 +396,7 @@ print("AUC score: ")
 print(auc.compute())
 
 for param in model.classifier.parameters():
-    print(param.data.size())
+    print(param.data)
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
     plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
