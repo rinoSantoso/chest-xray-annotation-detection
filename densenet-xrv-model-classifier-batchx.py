@@ -355,7 +355,8 @@ for img in test_inputs:
         pred = model.forward(img.cuda())
     except Exception as e:
         pred =  model.forward(img)
-
+    
+    print(pred)
     preds.append(pred.argmax().item())
     
 from torchmetrics import AUC
