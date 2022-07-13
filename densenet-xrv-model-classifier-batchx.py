@@ -257,36 +257,36 @@ class FinetunedModel(pl.LightningModule):
         preds_split = torch.split(preds, 1)
 #         print(preds_split[0].size())
         
-        test_true_positive = 0
-        test_false_positive = 0
-        test_true_negative = 0
-        test_false_negative = 0
-        test_preds = []
+#         test_true_positive = 0
+#         test_false_positive = 0
+#         test_true_negative = 0
+#         test_false_negative = 0
+#         test_preds = []
         
-        print(len(test_inputs))
+#         print(len(test_inputs))
         
-        for img in test_inputs:
-            try:
-                test_pred = self.forward(img.cuda())
-            except Exception as e:
-                test_pred =  self.forward(img)
+#         for img in test_inputs:
+#             try:
+#                 test_pred = self.forward(img.cuda())
+#             except Exception as e:
+#                 test_pred =  self.forward(img)
 
-#             print(pred)
-            test_preds.append(test_pred.argmax().item())
+# #             print(pred)
+#             test_preds.append(test_pred.argmax().item())
     
-        for i in range(len(test_preds)):
-            if test_preds[i] == 0:
-                if test_targets[i] == 0:
-                    test_true_positive+=1
-                else:
-                    test_false_positive+=1
-            else:
-                if test_targets[i] == 0:
-                    test_false_negative+=1
-                else:
-                    test_true_negative+=1
+#         for i in range(len(test_preds)):
+#             if test_preds[i] == 0:
+#                 if test_targets[i] == 0:
+#                     test_true_positive+=1
+#                 else:
+#                     test_false_positive+=1
+#             else:
+#                 if test_targets[i] == 0:
+#                     test_false_negative+=1
+#                 else:
+#                     test_true_negative+=1
         
-        print("true positive: " + str(test_true_positive) + "\n" + "false positive: " + str(test_false_positive) + "\n" + "true negative: " + str(test_true_negative) + "\n"  + "false negative: " + str(test_false_negative))
+#         print("true positive: " + str(test_true_positive) + "\n" + "false positive: " + str(test_false_positive) + "\n" + "true negative: " + str(test_true_negative) + "\n"  + "false negative: " + str(test_false_negative))
         
         
 #         confmat = ConfusionMatrix(num_classes=2)
