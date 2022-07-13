@@ -356,11 +356,11 @@ class FinetunedModel(pl.LightningModule):
 
 
 pl.seed_everything(88)
-path = "./custom_logs/lightning_logs/version_11/checkpoints/epoch=99-step=2300.ckpt"
-model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+# path = "./custom_logs/lightning_logs/version_11/checkpoints/epoch=99-step=2300.ckpt"
+# model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-trainer = pl.Trainer()
-trainer.test(model)
+# trainer = pl.Trainer()
+# trainer.test(model)
 
 dataset_classes = ['Bus','Car']
     
@@ -455,8 +455,8 @@ for param in model.parameters():
     model_classifier_parameters.append(param.data)
 #     print(param.data)
 
-for i in range(len(model_classifier_parameters)):
-    print(torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]))
+# for i in range(len(model_classifier_parameters)):
+#     print(torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]))
 
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
