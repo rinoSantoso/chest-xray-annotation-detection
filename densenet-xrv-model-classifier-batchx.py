@@ -242,8 +242,8 @@ class FinetunedModel(pl.LightningModule):
 #             print(i.size())
             test_inputs.append(i)
         
-        for param in self.classifier.parameters():
-            print(param.data)
+#         for param in self.classifier.parameters():
+#             print(param.data)
         
 #         test_inputs.extend(inputs)
         test_targets.extend(labels.tolist())
@@ -334,36 +334,52 @@ loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 targets = []
 preds = []
 
-# for idx,(img,label) in enumerate(loader):
-#     targets.append(label.item())
+true_positive = 0
+false_positive = 0
+true_negative = 0
+false_negative = 0
+
+for idx,(img,label) in enumerate(loader):
+    targets.append(label.item())
     
-# #     print(img.size())
+#     print(img.size())
     
-#     try:
-#         pred = model.forward(img.cuda())
-#     except Exception as e:
-#         pred =  model.forward(img)
-# #         print(e)
-
-#     preds.append(pred.argmax().item())
-
-
-
-
-for img in test_inputs:
     try:
         pred = model.forward(img.cuda())
     except Exception as e:
         pred =  model.forward(img)
-    
-    print(pred)
+#         print(e)
+
     preds.append(pred.argmax().item())
+    
+    if pred.argmax().item() == 0:
+        if label.item() == 0:
+            true_positive+=1
+        else:
+            false_positive+=1
+    else:
+        if label.item() == 0:
+            false_negative+=1
+        else:
+            true_negative+=1
+
+
+
+
+# for img in test_inputs:
+#     try:
+#         pred = model.forward(img.cuda())
+#     except Exception as e:
+#         pred =  model.forward(img)
+    
+#     print(pred)
+#     preds.append(pred.argmax().item())
     
 from torchmetrics import AUC
 
-# targets_torch = torch.tensor(targets)
-targets_torch = torch.tensor(test_targets)
-targets = test_targets
+targets_torch = torch.tensor(targets)
+# targets_torch = torch.tensor(test_targets)
+# targets = test_targets
 preds_torch = torch.tensor(preds)
 
 
@@ -374,22 +390,22 @@ preds_torch = torch.tensor(preds)
 # print("Confusion Matrix: \nClean - Dirty")
 # print(confmat(preds_torch, targets_torch))
 
-true_positive = 0
-false_positive = 0
-true_negative = 0
-false_negative = 0
+# true_positive = 0
+# false_positive = 0
+# true_negative = 0
+# false_negative = 0
     
-for i in range(len(targets)):
-    if preds[i] == 0:
-        if targets[i] == 0:
-            true_positive+=1
-        else:
-            false_positive+=1
-    else:
-        if targets[i] == 0:
-            false_negative+=1
-        else:
-            true_negative+=1
+# for i in range(len(targets)):
+#     if preds[i] == 0:
+#         if targets[i] == 0:
+#             true_positive+=1
+#         else:
+#             false_positive+=1
+#     else:
+#         if targets[i] == 0:
+#             false_negative+=1
+#         else:
+#             true_negative+=1
 
 print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
 
@@ -398,8 +414,8 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
-for param in model.classifier.parameters():
-    print(param.data)
+# for param in model.classifier.parameters():
+#     print(param.data)
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
     plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
