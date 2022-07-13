@@ -253,7 +253,7 @@ class FinetunedModel(pl.LightningModule):
         
         confmat = ConfusionMatrix(num_classes=2)
 #         print("Confusion Matrix: \nClean - Dirty")
-        print(confmat(preds, labels))
+#         print(confmat(preds, labels))
         acc = accuracy(preds, labels)
         
         # Calling self.log will surface up scalars for you in TensorBoard
@@ -395,7 +395,7 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
-for param in model.parameters():
+for param in model.features.parameters():
     print(param.data)
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
