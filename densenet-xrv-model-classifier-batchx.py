@@ -361,6 +361,7 @@ model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
 trainer = pl.Trainer()
 trainer.test(model)
+model.freeze()
 
 dataset_classes = ['Bus','Car']
     
@@ -381,9 +382,9 @@ for idx,(img,label) in enumerate(loader):
 #     print(img.size())
     
     try:
-        pred = model(img.cuda())
+        pred = model.forward(img.cuda())
     except Exception as e:
-        pred =  model(img)
+        pred =  model.forward(img)
 #         print(e)
 
     preds.append(pred.argmax().item())
