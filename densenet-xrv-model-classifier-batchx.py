@@ -395,7 +395,7 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
-for param in model.features.parameters():
+for param in model.classfier.parameters():
     print(param.data.size())
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
