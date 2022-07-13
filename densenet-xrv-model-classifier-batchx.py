@@ -239,7 +239,7 @@ class FinetunedModel(pl.LightningModule):
         split_inputs = torch.split(inputs, 1)
         
         for i in split_inputs:
-            print(i.size())
+#             print(i.size())
             test_inputs.append(i)
         
     
