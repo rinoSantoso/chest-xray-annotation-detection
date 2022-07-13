@@ -313,6 +313,7 @@ model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
 trainer = pl.Trainer()
 trainer.test(model)
+model.freeze()
 
 dataset_classes = ['Clean','Dirty']
     
