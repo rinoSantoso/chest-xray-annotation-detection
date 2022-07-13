@@ -242,7 +242,9 @@ class FinetunedModel(pl.LightningModule):
 #             print(i.size())
             test_inputs.append(i)
         
-    
+        for param in self.classifier.parameters():
+            print(param.data)
+        
 #         test_inputs.extend(inputs)
         test_targets.extend(labels.tolist())
         
