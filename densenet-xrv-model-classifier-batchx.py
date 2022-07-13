@@ -381,9 +381,9 @@ for idx,(img,label) in enumerate(loader):
 #     print(img.size())
     
     try:
-        pred = model.forward(img.cuda())
+        pred = model(img.cuda())
     except Exception as e:
-        pred =  model.forward(img)
+        pred =  model(img)
 #         print(e)
 
     preds.append(pred.argmax().item())
