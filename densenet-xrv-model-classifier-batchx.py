@@ -142,6 +142,7 @@ def warn_normalization(x):
         
 test_inputs = []
 test_targets = []
+self_classifier_parameters = []
         
 class FinetunedModel(pl.LightningModule):
     def __init__(self):
@@ -242,7 +243,8 @@ class FinetunedModel(pl.LightningModule):
 #             print(i.size())
             test_inputs.append(i)
         
-#         for param in self.classifier.parameters():
+        for param in self.classifier.parameters():
+            self_classifier_parameters.append(param.data)
 #             print(param.data)
         
 #         test_inputs.extend(inputs)
@@ -416,7 +418,9 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
-# for param in model.classifier.parameters():
+model_classifier_parameters = []
+for param in model.classifier.parameters():
+    model_classifier_parameters.append(param.data)
 #     print(param.data)
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
