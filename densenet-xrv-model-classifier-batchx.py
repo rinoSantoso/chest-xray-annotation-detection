@@ -395,6 +395,9 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
+for param in model.parameters():
+    print(param.data)
+
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
     plt.imshow(tensor_to_imgnumpy_simple(imgnumpy))
     plt.title(dataset_classes[label])
