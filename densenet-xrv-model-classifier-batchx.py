@@ -261,15 +261,28 @@ class FinetunedModel(pl.LightningModule):
         test_false_positive = 0
         test_true_negative = 0
         test_false_negative = 0
+        test_preds = []
         
         for img in test_inputs:
             try:
-                pred = self.forward(img.cuda())
+                test_pred = self.forward(img.cuda())
             except Exception as e:
-                pred =  self.forward(img)
+                test_pred =  self.forward(img)
 
 #             print(pred)
-            preds.append(pred.argmax().item())
+            test_preds.append(test_pred.argmax().item())
+    
+            for i in range(len(targets)):
+                if test_preds[i] == 0:
+                    if test_targets[i] == 0:
+                        true_positive+=1
+                    else:
+                        test_false_positive+=1
+                else:
+                    if targets[i] == 0:
+                        test_false_negative+=1
+                    else:
+                        test_true_negative+=1
         
         print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
         
