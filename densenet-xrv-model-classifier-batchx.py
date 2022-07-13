@@ -243,7 +243,7 @@ class FinetunedModel(pl.LightningModule):
 #             print(i.size())
             test_inputs.append(i)
         
-        for param in self.classifier.parameters():
+        for param in self.parameters():
             self_classifier_parameters.append(param.data)
 #             print(param.data)
         
@@ -451,7 +451,7 @@ print("AUC score: ")
 print(auc.compute())
 
 model_classifier_parameters = []
-for param in model.classifier.parameters():
+for param in model.parameters():
     model_classifier_parameters.append(param.data)
 #     print(param.data)
 
