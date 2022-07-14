@@ -396,7 +396,7 @@ for idx,(img,label) in enumerate(loader):
     preds.append(pred.argmax().item())
 
 
- 
+
 
 from torchmetrics import ConfusionMatrix
 from torchmetrics import AUC

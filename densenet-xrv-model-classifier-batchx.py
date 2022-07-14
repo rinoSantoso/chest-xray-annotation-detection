@@ -490,6 +490,6 @@ for idx,(img,label) in enumerate(loader):
         break
         
 plt.tight_layout()
-plt.savefig('bar.png')
+plt.savefig('batch4.png')
 
 
