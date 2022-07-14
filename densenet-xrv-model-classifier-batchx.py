@@ -311,7 +311,7 @@ class FinetunedModel(pl.LightningModule):
     def setup(self, stage=None):
         # split, transform, secretly move to GPU (if needed) by PL (not by us)
         if stage == 'fit' or stage is None:
-            dataset_full = datasets.ImageFolder(root='./cars_buses/training/', transform=self.tf_compose)
+            dataset_full = datasets.ImageFolder(root='./data/Batch X/Train/', transform=self.tf_compose)
             
             # split
             SIZE_TRAIN_DATA = int(len(dataset_full)*0.75)
@@ -319,7 +319,7 @@ class FinetunedModel(pl.LightningModule):
             self.dataset_train, self.dataset_val = random_split(dataset_full, [SIZE_TRAIN_DATA,SIZE_VAL_DATA])
             
         if stage == 'test' or stage is None:
-            self.dataset_test = datasets.ImageFolder(root='./cars_buses/test/', transform=self.tf_compose)
+            self.dataset_test = datasets.ImageFolder(root='./data/Batch X/Test/', transform=self.tf_compose)
             
 #         import pdb; pdb.set_trace()
             
@@ -356,14 +356,14 @@ class FinetunedModel(pl.LightningModule):
 
 
 pl.seed_everything(88)
-path = "./custom_logs/lightning_logs/version_11/checkpoints/epoch=99-step=2300.ckpt"
+path = "./custom_logs/lightning_logs/version_10/checkpoints/epoch=99-step=1000.ckpt"
 model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
 trainer = pl.Trainer()
 trainer.test(model)
 model.freeze()
 
-dataset_classes = ['Bus','Car']
+dataset_classes = ['Clean','Dirty']
     
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
