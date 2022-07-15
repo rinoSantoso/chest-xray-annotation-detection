@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[2]:
 
 
 import numpy as np
@@ -20,7 +20,7 @@ import requests
 from PIL import Image
 
 
-# In[6]:
+# In[5]:
 
 
 def tensor_to_imgnumpy(image: torch.Tensor, denormalize=False) -> np.ndarray:
@@ -34,7 +34,7 @@ def tensor_to_imgnumpy(image: torch.Tensor, denormalize=False) -> np.ndarray:
     return imgnumpy
 
 
-# In[1]:
+# In[6]:
 
 
 def tensor_to_imgnumpy_simple(image):
@@ -43,7 +43,7 @@ def tensor_to_imgnumpy_simple(image):
     return imgnumpy
 
 
-# In[3]:
+# In[4]:
 
 
 # from cifar10_models.inception import inception_v3
@@ -51,9 +51,10 @@ def tensor_to_imgnumpy_simple(image):
 # from cifar10_models.mobilenetv2 import mobilenet_v2
 # from cifar10_models.resnet import resnet18
 # from cifar10_models.densenet import densenet121
-# modelUsed = densenet121(pretrained=True)
+modelUsed = xrv.models.ResNet(weights="resnet50-res512-all")
 
-# print(modelUsed)
+print(modelUsed)
+print(modelUsed.model.fc.out_features)
 
 
 # In[7]:
@@ -112,7 +113,7 @@ class AddColorChannel(torch.nn.Module):
         return img[None, :, :]
 
 
-# In[24]:
+# In[8]:
 
 
 warning_log = {}
@@ -155,20 +156,53 @@ class FinetunedModel(pl.LightningModule):
         super().__init__()
         
         # load pretrained model
-        model = xrv.models.DenseNet(weights="densenet121-res224-all")
+        model = xrv.models.ResNet(weights="resnet50-res512-all")
         
-        self.features = model.features
+        self.model = model.model
         
-        self.classifier = model.classifier
+        self.conv1 = model.model.conv1
+        self.bn1 = model.model.bn1
+        self.relu = model.model.relu
+        self.maxpool = model.model.maxpool
+
+        self.layer1 = model.model.layer1
+        self.layer2 = model.model.layer2
+        self.layer3 = model.model.layer3
+        self.layer4 = model.model.layer4
+
+        self.avgpool = model.model.avgpool
+        
+        self.fc = model.model.fc
         
 #         freeze the feature learning
-        for param in self.features.parameters():
+        for param in self.conv1.parameters():
+              param.requires_grad = False
+        
+        for param in self.bn1.parameters():
+              param.requires_grad = False
+                
+        for param in self.relu.parameters():
+              param.requires_grad = False
+                
+        for param in self.maxpool.parameters():
+              param.requires_grad = False
+                
+        for param in self.layer1.parameters():
+              param.requires_grad = False
+        
+        for param in self.layer2.parameters():
+              param.requires_grad = False
+                
+        for param in self.layer3.parameters():
+              param.requires_grad = False
+                
+        for param in self.layer4.parameters():
               param.requires_grad = False
         
         # change the number of output classes of the last layer
         # this is useless line as it the number of output classes is already set to be 10
-        self.classifier = nn.Linear(
-            in_features=self.classifier.in_features,
+        self.fc = nn.Linear(
+            in_features=self.fc.in_features,
             out_features=2)
         
         # follow https://pytorch.org/hub/pytorch_vision_alexnet/
@@ -181,24 +215,33 @@ class FinetunedModel(pl.LightningModule):
             tf_custom_normalize,
             tf_add_color_channel,
 #             xrv.datasets.XRayCenterCrop(),
-            xrv.datasets.XRayResizer(224),
+            xrv.datasets.XRayResizer(512),
 #             tf_totensor
         ])
     
-    def features2(self, x):
-        x = fix_resolution(x, 224, self)
+    def features(self, x):
+        x = fix_resolution(x, 512, self)
         warn_normalization(x)
         
-        features = self.features(x)
-        out = F.relu(features, inplace=True)
-        out = F.adaptive_avg_pool2d(out, (1, 1)).view(features.size(0), -1)
-        return out
+        x = self.model.conv1(x)
+        x = self.model.bn1(x)
+        x = self.model.relu(x)
+        x = self.model.maxpool(x)
+
+        x = self.model.layer1(x)
+        x = self.model.layer2(x)
+        x = self.model.layer3(x)
+        x = self.model.layer4(x)
+
+        x = self.model.avgpool(x)
+        x = torch.flatten(x, 1)
+        return x
     
     def forward(self, x):
-        x = fix_resolution(x, 224, self)
+        x = fix_resolution(x, 512, self)
+        warn_normalization(x)
         
-        features = self.features2(x)
-        out = self.classifier(features)
+        out = self.model(x)
         
         if hasattr(self, 'apply_sigmoid') and self.apply_sigmoid:
             out = torch.sigmoid(out)
@@ -253,7 +296,7 @@ class FinetunedModel(pl.LightningModule):
         return loss
     
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters(), lr=1e-4)
+        optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         return optimizer
     
     ####################
@@ -263,7 +306,7 @@ class FinetunedModel(pl.LightningModule):
     def setup(self, stage=None):
         # split, transform, secretly move to GPU (if needed) by PL (not by us)
         if stage == 'fit' or stage is None:
-            dataset_full = datasets.ImageFolder(root='./data/Batch 4.1/Train/', transform=self.tf_compose)
+            dataset_full = datasets.ImageFolder(root='./data/Batch X/Train/', transform=self.tf_compose)
             
             # split
             SIZE_TRAIN_DATA = int(len(dataset_full)*0.75)
@@ -271,21 +314,21 @@ class FinetunedModel(pl.LightningModule):
             self.dataset_train, self.dataset_val = random_split(dataset_full, [SIZE_TRAIN_DATA,SIZE_VAL_DATA])
             
         if stage == 'test' or stage is None:
-            self.dataset_test = datasets.ImageFolder(root='./data//Batch 4.1/Test/', transform=self.tf_compose)
+            self.dataset_test = datasets.ImageFolder(root='./data//Batch X/Test/', transform=self.tf_compose)
             
 #         import pdb; pdb.set_trace()
             
     def train_dataloader(self): 
-        return DataLoader(self.dataset_train, batch_size=50, num_workers=2)
+        return DataLoader(self.dataset_train, batch_size=10, num_workers=2)
 
     def val_dataloader(self):
-        return DataLoader(self.dataset_val, batch_size=50, num_workers=2)
+        return DataLoader(self.dataset_val, batch_size=10, num_workers=2)
     
     def test_dataloader(self):
-        return DataLoader(self.dataset_test, batch_size=50, num_workers=2)
+        return DataLoader(self.dataset_test, batch_size=10, num_workers=2)
 
 
-# In[25]:
+# In[9]:
 
 
 pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
@@ -294,17 +337,19 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./batch4.2_logs_densenet')
+    trainer = pl.Trainer(gpus=1,max_epochs=50,default_root_dir='./batchx_logs_resnet')
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./batch4.1_logs_densenet')
+    trainer = pl.Trainer(max_epochs=50,default_root_dir='./batchx_logs_resnet')
 
 trainer.fit(model)
 
+
+# In[26]:
+
+
 trainer.test()
-
-
 
 
 # pl.seed_everything(88)
@@ -442,7 +487,7 @@ for idx,(img,label) in enumerate(loader):
         break
         
 plt.tight_layout()
-plt.savefig('batch4.png')
+plt.savefig('batch4-resnet.png')
 
 
 

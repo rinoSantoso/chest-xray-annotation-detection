@@ -336,31 +336,31 @@ class FinetunedModel(pl.LightningModule):
 # In[25]:
 
 
-# pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
+pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
 
-# model = FinetunedModel()
+model = FinetunedModel()
 
-# # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
-# try:
-#     trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./custom_logs')
-# except Exception as e:
-#     # most likely due to GPU, so fallback to non GPU
-#     print(e)
-#     trainer = pl.Trainer(max_epochs=100,default_root_dir='./custom_logs')
+# most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
+try:
+    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./batchx')
+except Exception as e:
+    # most likely due to GPU, so fallback to non GPU
+    print(e)
+    trainer = pl.Trainer(max_epochs=100,default_root_dir='./batchx')
 
-# trainer.fit(model)
+trainer.fit(model)
 
-# trainer.test()
-
-
+trainer.test()
 
 
-pl.seed_everything(88)
-path = "./custom_logs/lightning_logs/version_10/checkpoints/epoch=99-step=1000.ckpt"
-model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-trainer = pl.Trainer()
-trainer.test(model)
+
+# pl.seed_everything(88)
+# path = "./custom_logs/lightning_logs/version_10/checkpoints/epoch=99-step=1000.ckpt"
+# model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+
+# trainer = pl.Trainer()
+# trainer.test(model)
 model.freeze()
 
 dataset_classes = ['Clean','Dirty']
@@ -451,14 +451,14 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
-model_classifier_parameters = []
-for param in model.parameters():
-    model_classifier_parameters.append(param.data)
-#     print(param.data)
+# model_classifier_parameters = []
+# for param in model.parameters():
+#     model_classifier_parameters.append(param.data)
+# #     print(param.data)
 
-for i in range(len(model_classifier_parameters)):
-    if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
-        print("FALSE")
+# for i in range(len(model_classifier_parameters)):
+#     if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
+#         print("FALSE")
 
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):

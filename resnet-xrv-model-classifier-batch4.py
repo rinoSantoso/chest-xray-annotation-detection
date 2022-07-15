@@ -337,11 +337,11 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=1,max_epochs=50,default_root_dir='./batch4.1_logs')
+    trainer = pl.Trainer(gpus=1,max_epochs=50,default_root_dir='./batch4.1_logs_resnet')
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
-    trainer = pl.Trainer(max_epochs=50,default_root_dir='./batch4.1_logs')
+    trainer = pl.Trainer(max_epochs=50,default_root_dir='./batch4.1_logs_resnet')
 
 trainer.fit(model)
 
@@ -448,14 +448,14 @@ auc.update(preds_torch, targets_torch)
 print("AUC score: ")
 print(auc.compute())
 
-model_classifier_parameters = []
-for param in model.parameters():
-    model_classifier_parameters.append(param.data)
-#     print(param.data)
+# model_classifier_parameters = []
+# for param in model.parameters():
+#     model_classifier_parameters.append(param.data)
+# #     print(param.data)
 
-for i in range(len(model_classifier_parameters)):
-    if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
-        print("FALSE")
+# for i in range(len(model_classifier_parameters)):
+#     if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
+#         print("FALSE")
 
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
