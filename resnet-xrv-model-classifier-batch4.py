@@ -337,11 +337,11 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./batch4.2_logs_resnet')
+    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./batch4.2_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./batch4.2_logs_resnet')
+    trainer = pl.Trainer(max_epochs=100,default_root_dir='./batch4.2_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
 
 trainer.fit(model)
 
