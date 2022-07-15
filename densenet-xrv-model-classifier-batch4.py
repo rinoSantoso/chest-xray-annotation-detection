@@ -3,7 +3,7 @@
 
 # In[1]:
 
-
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 import numpy as np
 import matplotlib.pyplot as plt
 import torch
