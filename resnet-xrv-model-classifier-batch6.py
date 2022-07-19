@@ -306,7 +306,7 @@ class FinetunedModel(pl.LightningModule):
     def setup(self, stage=None):
         # split, transform, secretly move to GPU (if needed) by PL (not by us)
         if stage == 'fit' or stage is None:
-            dataset_full = datasets.ImageFolder(root='./data/Batch 5/Train/', transform=self.tf_compose)
+            dataset_full = datasets.ImageFolder(root='./data/Batch 6/Train/', transform=self.tf_compose)
             
             # split
             SIZE_TRAIN_DATA = int(len(dataset_full)*0.75)
@@ -314,7 +314,7 @@ class FinetunedModel(pl.LightningModule):
             self.dataset_train, self.dataset_val = random_split(dataset_full, [SIZE_TRAIN_DATA,SIZE_VAL_DATA])
             
         if stage == 'test' or stage is None:
-            self.dataset_test = datasets.ImageFolder(root='./data//Batch 5/Test/', transform=self.tf_compose)
+            self.dataset_test = datasets.ImageFolder(root='./data//Batch 6/Test/', transform=self.tf_compose)
             
 #         import pdb; pdb.set_trace()
             
@@ -337,11 +337,11 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./batch5_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
+    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./batch6_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./batch5_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
+    trainer = pl.Trainer(max_epochs=100,default_root_dir='./batch6_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
 
 trainer.fit(model)
 
