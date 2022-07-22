@@ -263,7 +263,7 @@ class FinetunedModel(pl.LightningModule):
     def setup(self, stage=None):
         # split, transform, secretly move to GPU (if needed) by PL (not by us)
         if stage == 'fit' or stage is None:
-            dataset_full = datasets.ImageFolder(root='./data/Batch 6.2/Train/', transform=self.tf_compose)
+            dataset_full = datasets.ImageFolder(root='./data/Collection 5/Train/', transform=self.tf_compose)
             
             # split
             SIZE_TRAIN_DATA = int(len(dataset_full)*0.75)
@@ -271,7 +271,7 @@ class FinetunedModel(pl.LightningModule):
             self.dataset_train, self.dataset_val = random_split(dataset_full, [SIZE_TRAIN_DATA,SIZE_VAL_DATA])
             
         if stage == 'test' or stage is None:
-            self.dataset_test = datasets.ImageFolder(root='./data//Batch 6.2/Test/', transform=self.tf_compose)
+            self.dataset_test = datasets.ImageFolder(root='./data/Collection 5/Test/', transform=self.tf_compose)
             
 #         import pdb; pdb.set_trace()
             
@@ -294,11 +294,11 @@ model = FinetunedModel()
 
 # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
 try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./batch6.2_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
+    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./collection5_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
 except Exception as e:
     # most likely due to GPU, so fallback to non GPU
     print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./batch6.2_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
+    trainer = pl.Trainer(max_epochs=100,default_root_dir='./collection5_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
 
 trainer.fit(model)
 
@@ -364,7 +364,7 @@ for idx,(img,label) in enumerate(loader):
 #     print(pred)
 #     preds.append(pred.argmax().item())
     
-from torchmetrics import AUC
+from torchmetrics import F1Score
 
 targets_torch = torch.tensor(targets)
 # targets_torch = torch.tensor(test_targets)
@@ -398,10 +398,9 @@ preds_torch = torch.tensor(preds)
 
 print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
 
-auc = AUC(reorder=True)
-auc.update(preds_torch, targets_torch)
-print("AUC score: ")
-print(auc.compute())
+f1 = F1Score(num_classes=2)
+print("F1 score: ")
+print(f1(preds_torch, targets_torch))
 
 # model_classifier_parameters = []
 # for param in model.parameters():
@@ -442,7 +441,7 @@ for idx,(img,label) in enumerate(loader):
         break
         
 plt.tight_layout()
-plt.savefig('batch4.png')
+plt.savefig('collection5-densenet.png')
 
 
 
