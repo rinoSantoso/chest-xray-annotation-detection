@@ -331,33 +331,33 @@ class FinetunedModel(pl.LightningModule):
 # In[9]:
 
 
-pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
+# pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
 
-model = FinetunedModel()
+# model = FinetunedModel()
 
-# most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
-try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./collection1_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
-except Exception as e:
-    # most likely due to GPU, so fallback to non GPU
-    print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./collection1_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
+# # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
+# try:
+#     trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./collection1_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
+# except Exception as e:
+#     # most likely due to GPU, so fallback to non GPU
+#     print(e)
+#     trainer = pl.Trainer(max_epochs=100,default_root_dir='./collection1_logs_resnet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
 
-trainer.fit(model)
-
-
-# In[26]:
+# trainer.fit(model)
 
 
-trainer.test()
+# # In[26]:
 
 
-# pl.seed_everything(88)
-# path = "./custom_logs/lightning_logs/version_10/checkpoints/epoch=99-step=1000.ckpt"
-# model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+# trainer.test()
 
-# trainer = pl.Trainer()
-# trainer.test(model)
+
+pl.seed_everything(88)
+path = "./collection1_logs_resnet/lightning_logs/version_0/checkpoints/epoch=98-step=5148.ckpt"
+model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+
+trainer = pl.Trainer()
+trainer.test(model)
 model.freeze()
 
 dataset_classes = ['Clean','Dirty']
@@ -374,6 +374,7 @@ true_negative = 0
 false_negative = 0
 
 for idx,(img,label) in enumerate(loader):
+    print("test predict confmat")
     targets.append(label.item())
     
 #     print(img.size())
