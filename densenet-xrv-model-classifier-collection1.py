@@ -311,8 +311,8 @@ pl.seed_everything(88)
 path = "./collection1_logs_densenet/lightning_logs/version_0/checkpoints/epoch=55-step=616.ckpt"
 model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-# trainer = pl.Trainer()
-# trainer.test(model)
+trainer = pl.Trainer()
+trainer.test(model)
 model.freeze()
 
 # dataset_classes = ['Clean','Dirty']
