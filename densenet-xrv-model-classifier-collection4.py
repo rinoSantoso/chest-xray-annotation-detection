@@ -308,7 +308,7 @@ class FinetunedModel(pl.LightningModule):
 
 
 pl.seed_everything(88)
-path = "./collection1_logs_densenet/lightning_logs/version_0/checkpoints/epoch=99-step=3100.ckpt"
+path = "./collection4_logs_densenet/lightning_logs/version_0/checkpoints/epoch=99-step=3100.ckpt"
 model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
 trainer = pl.Trainer()
