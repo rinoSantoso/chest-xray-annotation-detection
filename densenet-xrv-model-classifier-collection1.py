@@ -420,7 +420,7 @@ loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
 plt.figure(figsize=(40, 64))
 for idx,(img,label) in enumerate(loader):
-    plt.subplot(10,5,idx+1)
+    plt.subplot(20,5,idx+1)
     imshow(img[0],label,denormalize=True)
     
     

@@ -288,128 +288,128 @@ class FinetunedModel(pl.LightningModule):
 # In[25]:
 
 
-pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
+# pl.seed_everything(88) # --> for consistency, change the number with your favorite number :D
 
-model = FinetunedModel()
+# model = FinetunedModel()
 
-# most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
-try:
-    trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./collection2_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
-except Exception as e:
-    # most likely due to GPU, so fallback to non GPU
-    print(e)
-    trainer = pl.Trainer(max_epochs=100,default_root_dir='./collection2_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
+# # most basic trainer, uses good defaults (auto-tensorboard, checkpoints, logs, and more)
+# try:
+#     trainer = pl.Trainer(gpus=1,max_epochs=100,default_root_dir='./collection1_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min", min_delta=0.00)])
+# except Exception as e:
+#     # most likely due to GPU, so fallback to non GPU
+#     print(e)
+#     trainer = pl.Trainer(max_epochs=100,default_root_dir='./collection1_logs_densenet', callbacks=[EarlyStopping(monitor="val_loss", mode="min")])
 
-trainer.fit(model)
+# trainer.fit(model)
 
-trainer.test()
-
-
+# trainer.test()
 
 
-# pl.seed_everything(88)
-# path = "./custom_logs/lightning_logs/version_10/checkpoints/epoch=99-step=1000.ckpt"
-# model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
 
-# trainer = pl.Trainer()
-# trainer.test(model)
+
+pl.seed_everything(88)
+path = "./collection1_logs_densenet/lightning_logs/version_0/checkpoints/epoch=57-step=928"
+model = FinetunedModel.load_from_checkpoint(checkpoint_path=path)
+
+trainer = pl.Trainer()
+trainer.test(model)
 model.freeze()
 
 dataset_classes = ['Clean','Dirty']
     
-loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
+# loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
 
-targets = []
-preds = []
-
-true_positive = 0
-false_positive = 0
-true_negative = 0
-false_negative = 0
-
-for idx,(img,label) in enumerate(loader):
-    targets.append(label.item())
-    
-#     print(img.size())
-    
-    try:
-        pred = model.forward(img.cuda())
-    except Exception as e:
-        pred =  model.forward(img)
-#         print(e)
-
-    preds.append(pred.argmax().item())
-    
-    if pred.argmax().item() == 0:
-        if label.item() == 0:
-            true_positive+=1
-        else:
-            false_positive+=1
-    else:
-        if label.item() == 0:
-            false_negative+=1
-        else:
-            true_negative+=1
-
-
-
-
-# for img in test_inputs:
-#     try:
-#         pred = model.forward(img.cuda())
-#     except Exception as e:
-#         pred =  model.forward(img)
-    
-#     print(pred)
-#     preds.append(pred.argmax().item())
-    
-from torchmetrics import F1Score
-
-targets_torch = torch.tensor(targets)
-# targets_torch = torch.tensor(test_targets)
-# targets = test_targets
-preds_torch = torch.tensor(preds)
-
-
-# print(preds)
-# print(targets)
-
-# confmat = ConfusionMatrix(num_classes=2)
-# print("Confusion Matrix: \nClean - Dirty")
-# print(confmat(preds_torch, targets_torch))
+# targets = []
+# preds = []
 
 # true_positive = 0
 # false_positive = 0
 # true_negative = 0
 # false_negative = 0
+
+# for idx,(img,label) in enumerate(loader):
+#     targets.append(label.item())
     
-# for i in range(len(targets)):
-#     if preds[i] == 0:
-#         if targets[i] == 0:
+# #     print(img.size())
+    
+#     try:
+#         pred = model.forward(img.cuda())
+#     except Exception as e:
+#         pred =  model.forward(img)
+# #         print(e)
+
+#     preds.append(pred.argmax().item())
+    
+#     if pred.argmax().item() == 0:
+#         if label.item() == 0:
 #             true_positive+=1
 #         else:
 #             false_positive+=1
 #     else:
-#         if targets[i] == 0:
+#         if label.item() == 0:
 #             false_negative+=1
 #         else:
 #             true_negative+=1
 
-print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
 
-f1 = F1Score(num_classes=2)
-print("F1 score: ")
-print(f1(preds_torch, targets_torch))
 
-# model_classifier_parameters = []
-# for param in model.parameters():
-#     model_classifier_parameters.append(param.data)
-# #     print(param.data)
 
-# for i in range(len(model_classifier_parameters)):
-#     if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
-#         print("FALSE")
+# # for img in test_inputs:
+# #     try:
+# #         pred = model.forward(img.cuda())
+# #     except Exception as e:
+# #         pred =  model.forward(img)
+    
+# #     print(pred)
+# #     preds.append(pred.argmax().item())
+    
+# from torchmetrics import F1Score
+
+# targets_torch = torch.tensor(targets)
+# # targets_torch = torch.tensor(test_targets)
+# # targets = test_targets
+# preds_torch = torch.tensor(preds)
+
+
+# # print(preds)
+# # print(targets)
+
+# # confmat = ConfusionMatrix(num_classes=2)
+# # print("Confusion Matrix: \nClean - Dirty")
+# # print(confmat(preds_torch, targets_torch))
+
+# # true_positive = 0
+# # false_positive = 0
+# # true_negative = 0
+# # false_negative = 0
+    
+# # for i in range(len(targets)):
+# #     if preds[i] == 0:
+# #         if targets[i] == 0:
+# #             true_positive+=1
+# #         else:
+# #             false_positive+=1
+# #     else:
+# #         if targets[i] == 0:
+# #             false_negative+=1
+# #         else:
+# #             true_negative+=1
+
+# print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
+
+# f1 = F1Score(num_classes=2)
+# print("F1 score: ")
+# print(f1(preds_torch, targets_torch))
+
+# # model_classifier_parameters = []
+# # for param in model.parameters():
+# #     model_classifier_parameters.append(param.data)
+# # #     print(param.data)
+
+# # for i in range(len(model_classifier_parameters)):
+# #     if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
+# #         print("FALSE")
 
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
@@ -418,9 +418,9 @@ def imshow(imgnumpy: np.ndarray, label, denormalize=False):
     
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
-plt.figure(figsize=(20, 8))
+plt.figure(figsize=(40, 64))
 for idx,(img,label) in enumerate(loader):
-    plt.subplot(4,10,idx+1)
+    plt.subplot(20,5,idx+1)
     imshow(img[0],label,denormalize=True)
     
     
@@ -437,11 +437,11 @@ for idx,(img,label) in enumerate(loader):
     title_pred = dataset_classes[pred.argmax().item()]
     plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
     
-    if idx == 40-1:
+    if idx == 100-1:
         break
         
 plt.tight_layout()
-plt.savefig('collection2-densenet.png')
+plt.savefig('collection2b-densenet.png')
 
 
 

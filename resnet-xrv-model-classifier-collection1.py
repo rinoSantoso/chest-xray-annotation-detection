@@ -362,100 +362,99 @@ model.freeze()
 
 dataset_classes = ['Clean','Dirty']
     
-loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
+# loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
 
-targets = []
-preds = []
-
-true_positive = 0
-false_positive = 0
-true_negative = 0
-false_negative = 0
-
-for idx,(img,label) in enumerate(loader):
-    print("test predict confmat")
-    targets.append(label.item())
-    
-#     print(img.size())
-    
-    try:
-        pred = model.forward(img.cuda())
-    except Exception as e:
-        pred =  model.forward(img)
-#         print(e)
-
-    preds.append(pred.argmax().item())
-    
-    if pred.argmax().item() == 0:
-        if label.item() == 0:
-            true_positive+=1
-        else:
-            false_positive+=1
-    else:
-        if label.item() == 0:
-            false_negative+=1
-        else:
-            true_negative+=1
-
-
-
-
-# for img in test_inputs:
-#     try:
-#         pred = model.forward(img.cuda())
-#     except Exception as e:
-#         pred =  model.forward(img)
-    
-#     print(pred)
-#     preds.append(pred.argmax().item())
-    
-from torchmetrics import F1Score
-
-targets_torch = torch.tensor(targets)
-# targets_torch = torch.tensor(test_targets)
-# targets = test_targets
-preds_torch = torch.tensor(preds)
-
-
-# print(preds)
-# print(targets)
-
-# confmat = ConfusionMatrix(num_classes=2)
-# print("Confusion Matrix: \nClean - Dirty")
-# print(confmat(preds_torch, targets_torch))
+# targets = []
+# preds = []
 
 # true_positive = 0
 # false_positive = 0
 # true_negative = 0
 # false_negative = 0
+
+# for idx,(img,label) in enumerate(loader):
+#     targets.append(label.item())
     
-# for i in range(len(targets)):
-#     if preds[i] == 0:
-#         if targets[i] == 0:
+# #     print(img.size())
+    
+#     try:
+#         pred = model.forward(img.cuda())
+#     except Exception as e:
+#         pred =  model.forward(img)
+# #         print(e)
+
+#     preds.append(pred.argmax().item())
+    
+#     if pred.argmax().item() == 0:
+#         if label.item() == 0:
 #             true_positive+=1
 #         else:
 #             false_positive+=1
 #     else:
-#         if targets[i] == 0:
+#         if label.item() == 0:
 #             false_negative+=1
 #         else:
 #             true_negative+=1
 
-print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
 
-f1 = F1Score(num_classes=2)
-print("F1 score: ")
-print(f1(preds_torch, targets_torch))
 
-# model_classifier_parameters = []
-# for param in model.parameters():
-#     model_classifier_parameters.append(param.data)
-# #     print(param.data)
 
-# for i in range(len(model_classifier_parameters)):
-#     if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
-#         print("FALSE")
+# # for img in test_inputs:
+# #     try:
+# #         pred = model.forward(img.cuda())
+# #     except Exception as e:
+# #         pred =  model.forward(img)
+    
+# #     print(pred)
+# #     preds.append(pred.argmax().item())
+    
+# from torchmetrics import F1Score
+
+# targets_torch = torch.tensor(targets)
+# # targets_torch = torch.tensor(test_targets)
+# # targets = test_targets
+# preds_torch = torch.tensor(preds)
+
+
+# # print(preds)
+# # print(targets)
+
+# # confmat = ConfusionMatrix(num_classes=2)
+# # print("Confusion Matrix: \nClean - Dirty")
+# # print(confmat(preds_torch, targets_torch))
+
+# # true_positive = 0
+# # false_positive = 0
+# # true_negative = 0
+# # false_negative = 0
+    
+# # for i in range(len(targets)):
+# #     if preds[i] == 0:
+# #         if targets[i] == 0:
+# #             true_positive+=1
+# #         else:
+# #             false_positive+=1
+# #     else:
+# #         if targets[i] == 0:
+# #             false_negative+=1
+# #         else:
+# #             true_negative+=1
+
+# print("true positive: " + str(true_positive) + "\n" + "false positive: " + str(false_positive) + "\n" + "true negative: " + str(true_negative) + "\n"  + "false negative: " + str(false_negative))
+
+# f1 = F1Score(num_classes=2)
+# print("F1 score: ")
+# print(f1(preds_torch, targets_torch))
+
+# # model_classifier_parameters = []
+# # for param in model.parameters():
+# #     model_classifier_parameters.append(param.data)
+# # #     print(param.data)
+
+# # for i in range(len(model_classifier_parameters)):
+# #     if torch.equal(model_classifier_parameters[i], self_classifier_parameters[i]) == False:
+# #         print("FALSE")
 
 
 def imshow(imgnumpy: np.ndarray, label, denormalize=False):
@@ -464,9 +463,9 @@ def imshow(imgnumpy: np.ndarray, label, denormalize=False):
     
 loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
-plt.figure(figsize=(20, 8))
+plt.figure(figsize=(40, 64))
 for idx,(img,label) in enumerate(loader):
-    plt.subplot(4,10,idx+1)
+    plt.subplot(20,5,idx+1)
     imshow(img[0],label,denormalize=True)
     
     
@@ -483,12 +482,8 @@ for idx,(img,label) in enumerate(loader):
     title_pred = dataset_classes[pred.argmax().item()]
     plt.title(f"{title_dataset}({title_pred})",color=("green" if title_dataset==title_pred else "red"))
     
-    if idx == 40-1:
+    if idx == 100-1:
         break
         
 plt.tight_layout()
-plt.savefig('collection1-resnet.png')
-
-
-
-
+plt.savefig('collection1b-resnet.png')
