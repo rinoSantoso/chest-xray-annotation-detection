@@ -315,7 +315,7 @@ trainer = pl.Trainer()
 trainer.test(model)
 model.freeze()
 
-# dataset_classes = ['Clean','Dirty']
+dataset_classes = ['Clean','Dirty']
     
 # loader = DataLoader(model.dataset_test, batch_size=1, shuffle=True)
 
