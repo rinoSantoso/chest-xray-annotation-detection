@@ -1,5 +1,5 @@
 outs:
-- md5: d751713988987e9331980363e24189ce.dir
+- md5: 1758f3ba58e099a1345bf10ca42a3ed0.dir
   size: 0
-  nfiles: 0
+  nfiles: 1
   path: dvc_demo
